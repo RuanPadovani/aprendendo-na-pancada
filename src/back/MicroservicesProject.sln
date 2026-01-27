@@ -1,25 +1,48 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.5.002.0
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroservicesProject", "MicroservicesProject.csproj", "{0B8C1652-5C47-4EA6-B63B-81D0F83B0932}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IdentityService", "IdentityService", "{4429B672-B09E-4CC9-B72C-DA5A1DF0D212}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService.Api", "IdentityService\Api\IdentityService.Api.csproj", "{3CD86826-9E43-45CA-88DA-D38060898735}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService.Application", "IdentityService\Application\IdentityService.Application.csproj", "{13396614-9D48-482B-8983-3BEB9D01C7F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService.Domain", "IdentityService\Domain\IdentityService.Domain.csproj", "{4A1FEA61-C4E0-4651-A223-0288CA8E7BB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService.Infrastructure", "IdentityService\Infrastructure\IdentityService.Infrastructure.csproj", "{226EC140-0959-43FD-BE27-AFBAA0F4A753}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0B8C1652-5C47-4EA6-B63B-81D0F83B0932}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0B8C1652-5C47-4EA6-B63B-81D0F83B0932}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0B8C1652-5C47-4EA6-B63B-81D0F83B0932}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0B8C1652-5C47-4EA6-B63B-81D0F83B0932}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {367E5ECD-B396-4390-9C65-9FE9C55888E7}
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3CD86826-9E43-45CA-88DA-D38060898735}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CD86826-9E43-45CA-88DA-D38060898735}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CD86826-9E43-45CA-88DA-D38060898735}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CD86826-9E43-45CA-88DA-D38060898735}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13396614-9D48-482B-8983-3BEB9D01C7F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13396614-9D48-482B-8983-3BEB9D01C7F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13396614-9D48-482B-8983-3BEB9D01C7F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13396614-9D48-482B-8983-3BEB9D01C7F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A1FEA61-C4E0-4651-A223-0288CA8E7BB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A1FEA61-C4E0-4651-A223-0288CA8E7BB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A1FEA61-C4E0-4651-A223-0288CA8E7BB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A1FEA61-C4E0-4651-A223-0288CA8E7BB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{226EC140-0959-43FD-BE27-AFBAA0F4A753}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{226EC140-0959-43FD-BE27-AFBAA0F4A753}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{226EC140-0959-43FD-BE27-AFBAA0F4A753}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{226EC140-0959-43FD-BE27-AFBAA0F4A753}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3CD86826-9E43-45CA-88DA-D38060898735} = {4429B672-B09E-4CC9-B72C-DA5A1DF0D212}
+		{13396614-9D48-482B-8983-3BEB9D01C7F3} = {4429B672-B09E-4CC9-B72C-DA5A1DF0D212}
+		{4A1FEA61-C4E0-4651-A223-0288CA8E7BB6} = {4429B672-B09E-4CC9-B72C-DA5A1DF0D212}
+		{226EC140-0959-43FD-BE27-AFBAA0F4A753} = {4429B672-B09E-4CC9-B72C-DA5A1DF0D212}
 	EndGlobalSection
 EndGlobal
