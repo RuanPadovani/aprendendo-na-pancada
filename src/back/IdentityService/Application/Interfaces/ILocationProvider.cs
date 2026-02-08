@@ -1,3 +1,5 @@
+using IdentityService.Application.Results.Locations;
+
 namespace IdentityService.Application.Interfaces;
 
 public interface ILocationProvider

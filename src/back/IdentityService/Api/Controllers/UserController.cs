@@ -1,3 +1,9 @@
+using IdentityService.API.Contracts.Users;
+using IdentityService.API.Mappers;
+using IdentityService.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
 namespace IdentityService.API.Controllers;
 
 [ApiController]

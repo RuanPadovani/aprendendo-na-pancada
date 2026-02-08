@@ -1,3 +1,7 @@
+using IdentityService.API.Contracts.Users;
+using IdentityService.Application.Commands;
+using IdentityService.Application.Results;
+
 namespace IdentityService.API.Mappers;
 
 public static class UserApiMapper
