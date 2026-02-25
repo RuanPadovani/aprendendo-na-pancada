@@ -4,13 +4,14 @@ namespace IdentityService.Application.Interfaces;
 
 public interface IUserRepository
 {
-    Task <IEnumerable<User>> GetAll();
+    Task<IEnumerable<User>> ListAllUser();
 
-    Task<User> GetUserById(Guid id);
+    Task<User?> GetUserById(Guid id);
 
-    Task<User> CreateUser(User user);
+    Task<bool> CreateUser(string name, string email);
 
-    Task<User> EditUser(User user);
+    Task<bool> EditUser(Guid id, string name, string email);
 
-    Task<User> DeleteUser(Guid id);
+    Task<bool> DeleteUser(Guid id);
+    
 }

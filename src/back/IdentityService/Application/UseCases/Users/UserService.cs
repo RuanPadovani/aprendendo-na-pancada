@@ -13,47 +13,39 @@ public class UserService : IUserService
         => _userRepository = userRepository;
 
 
-    public async Task<UserResult?> GetUserById(Guid id)
+
+    public async Task<IEnumerable<UserResult>> ListAllUsersAsync()
+    {
+        var users = await _userRepository.ListAllUser();
+        return users.Select(ToResult);
+    }
+
+    public async Task<UserResult?> GetUserByIdAsync(Guid id)
     {
         var userEntity = await _userRepository.GetUserById(id);
 
         return userEntity is null ? null : ToResult(userEntity);
     }
 
-    public async Task<IEnumerable<UserResult>> ListAllUsers()
+    public async Task<bool> CreateUserAsync(CreateUserCommand createUser)
     {
-        var users = await _userRepository.GetAll();
-        return users.Select(ToResult);
+        var user = await _userRepository.CreateUser(createUser.Name, createUser.Email);
+
+        return user == true ? true : false;
     }
 
-    public async Task<Guid>CreateUser(CreateUserCommand command)
+    public async Task<bool> EditUserAsync(UpdateUserCommand user)
     {
-        var userEntity = new User(
-            name: command.Name,
-            email: command.Email
-        );
+        var updateUser = await _userRepository.EditUser(user.UserId, user.Name, user.Name);
 
-        await _userRepository.CreateUser(userEntity);
-
-        return userEntity.UserId;
+        return updateUser == true ? true : false;
     }
 
-    public async Task EditUser(UpdateUserCommand command)
+    public async Task<bool> DeleteUserAsync(Guid id)
     {
-        var existing = await _userRepository.GetUserById(command.UserId);
-        if (existing is null) return;
+        var deleteUser = await _userRepository.DeleteUser(id);
 
-        existing.Update(command.Name, command.Email);
-
-        await _userRepository.EditUser(existing);
-    }
-
-    public async Task DeleteUser(Guid id)
-    {
-        var userEntity = await _userRepository.GetUserById(id);
-        if (userEntity is null) return;
-
-        await _userRepository.DeleteUser(userEntity.UserId);
+        return deleteUser == true ? true : false;
     }
 
     private static UserResult ToResult(User user)

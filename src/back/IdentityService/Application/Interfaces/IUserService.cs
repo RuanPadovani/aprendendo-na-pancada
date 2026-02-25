@@ -5,9 +5,9 @@ namespace IdentityService.Application.Interfaces;
 
 public interface IUserService
 {
-    Task<UserResult?> GetUserById(Guid id);
-    Task <IEnumerable<UserResult>> ListAllUsers();
-    Task<Guid> CreateUser(CreateUserCommand createUser);
-    Task EditUser(UpdateUserCommand updateUser);
-    Task DeleteUser(Guid id);
+    Task<UserResult?> GetUserByIdAsync(Guid id);
+    Task <IEnumerable<UserResult>> ListAllUsersAsync();
+    Task<bool> CreateUserAsync(CreateUserCommand createUser);
+    Task<bool> EditUserAsync(UpdateUserCommand updateUser);
+    Task<bool> DeleteUserAsync(Guid id);
 }

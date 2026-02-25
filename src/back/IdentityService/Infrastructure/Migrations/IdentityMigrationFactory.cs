@@ -12,10 +12,9 @@ public class IdentityMigrationFactory
     {
         var config = new ConfigurationBuilder()
             .SetBasePath(AppContext.BaseDirectory)
-            .AddJsonFile("appsettings.Infrastructure.json", optional: true)
+            .AddJsonFile("appsettings.json", optional: true)
             .AddEnvironmentVariables()
             .Build();
-
 
         var connectionString = config.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' was not found!");

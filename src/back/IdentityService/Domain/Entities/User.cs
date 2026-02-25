@@ -10,36 +10,24 @@ public class User
 
     public User(string name, string email)
     {
-        SetName(name);
-        SetEmail(email);
-
         UserId = Guid.NewGuid();
+        Name = name;
+        Email = email;
         CreateAt = DateTime.UtcNow;
         IsActive = true;
     }
 
-    public void Update(string name, string email)
+    public User(
+        Guid userId,
+        string name,
+        string email,
+        DateTime creaAt,
+        bool isActice)
     {
-        SetName(name);
-        SetEmail(email);
-    }
-
-    public void SetActive(bool isActive)
-        => IsActive = isActive;
-
-    private void SetName(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("Nome inválido.", nameof(name));
-
-        Name = name.Trim();
-    }
-
-    private void SetEmail(string email)
-    {
-        if (string.IsNullOrWhiteSpace(email))
-            throw new ArgumentException("Email inválido.", nameof(email));
-
-        Email = email.Trim();
+        UserId = userId;
+        Name = name;
+        Email = email;
+        CreateAt = creaAt;
+        IsActive = isActice;
     }
 }

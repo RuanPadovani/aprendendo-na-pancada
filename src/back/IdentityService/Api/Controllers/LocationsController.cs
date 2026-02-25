@@ -12,11 +12,8 @@ public class LocationsController : Controller
         _logger = logger;
     }
 
-    public IActionResult Index()
-    {
-        return View();
-    }
 
+    [HttpGet(Name ="para")]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
