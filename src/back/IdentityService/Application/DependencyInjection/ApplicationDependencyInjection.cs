@@ -1,3 +1,6 @@
+using Application.Interfaces;
+using Application.Services;
+using Application.UseCases.Auth;
 using IdentityService.Application.Interfaces;
 using IdentityService.Application.UseCases;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +13,8 @@ public static class DependencyInjection
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddScoped<IUserService, UserService>();
-        return services;   
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<RefreshTokenUseCase>();
+        return services;
     }
 }

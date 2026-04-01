@@ -10,9 +10,12 @@ public class IdentityMigrationFactory
 {
     public IdentityMigration CreateDbContext(string[] args)
     {
+        var apiPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "Api");
+
         var config = new ConfigurationBuilder()
-            .SetBasePath(AppContext.BaseDirectory)
-            .AddJsonFile("appsettings.json", optional: true)
+            .SetBasePath(apiPath)
+            .AddJsonFile("appsettings.json", optional: false)
+            .AddJsonFile("appsettings.Development.json", optional: true)
             .AddEnvironmentVariables()
             .Build();
 

@@ -1,19 +1,18 @@
 using System.Data.Common;
 using IdentityService.Application.Interfaces;
-using IdentityService.Domain.Entities;
+using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
 
-namespace Infrastructure.Repositories.Query;
+namespace Infrastructure.Repositories;
 
 public class UserRepository : IUserRepository
 {
     private readonly string _conStr = null!;
-    /// <summary>Injeção de Dependencias</summary>
     public UserRepository(IConfiguration config)
     {
-        _conStr = config.GetConnectionString("DefaultConnection")
-            ??  throw new KeyNotFoundException($"The connection string parameter was not found for MariaDB in application settings.");
+        var conStr = config.GetConnectionString("DefaultConnection");
+        _conStr = conStr ??  throw new KeyNotFoundException($"The connection string parameter was not found for MariaDB in application settings.");
     }
 
     public async Task<IEnumerable<User>> ListAllUser()
@@ -21,11 +20,10 @@ public class UserRepository : IUserRepository
         using var conn = new MySqlConnection(_conStr);
 
         const string query = @"
-                            select 
-                                UserId, Name, Email, CreateAt, IsActive
-                            from 
-                                Users;
-                            ";
+                            select
+                                UserId, Name, Email, PasswordHash, CreateAt, IsActive
+                            from
+                                Users;";
 
         using var cmd = new MySqlCommand(query, conn);
         await conn.OpenAsync();
@@ -48,9 +46,9 @@ public class UserRepository : IUserRepository
         using var conn = new MySqlConnection(_conStr);
 
         const string query = @"
-                            select 
-                                UserId, Name, Email, CreateAt, IsActive
-                            from 
+                            select
+                                UserId, Name, Email, PasswordHash, CreateAt, IsActive
+                            from
                                 Users
                             where UserId = @Id
                             limit 1;
@@ -70,21 +68,49 @@ public class UserRepository : IUserRepository
 
         return mapper.Map(reader);
     }
+    public async Task<User?> GetUserByEmail(string email)
+    {
+        using var conn = new MySqlConnection(_conStr);
 
-    public async Task<bool> CreateUser(string name, string email)
+        const string query = @"
+                            select
+                                UserId, Name, Email, PasswordHash, CreateAt, IsActive
+                            from
+                                Users
+                            where Email = @Email
+                            limit 1;
+                            ";
+
+        using var cmd = new MySqlCommand(query, conn);
+        cmd.Parameters.AddWithValue("@Email", email);
+        
+        await conn.OpenAsync();
+
+        await using var reader = await cmd.ExecuteReaderAsync();
+
+        if(!await reader.ReadAsync())
+            return null;
+
+        var mapper = new UserMapper();
+
+        return mapper.Map(reader);
+    }
+
+    public async Task<bool> CreateUser(string name, string email, string passwordHash)
     {
         using var conn = new MySqlConnection(_conStr);
 
         const string query = @"
                             insert into Users
-                                    (UserId, Name, Email, CreateAt, IsActive)
-                            values (@Id, @Name, @Email, @CreateAt, IsActive);
+                                    (UserId, Name, Email, PasswordHash, CreateAt, IsActive)
+                            values (@Id, @Name, @Email, @PasswordHash, @CreateAt, @IsActive);
         ";
 
         using var cmd = new MySqlCommand(query,conn);
         cmd.Parameters.AddWithValue("@Id", Guid.NewGuid());
         cmd.Parameters.AddWithValue("@Name", name);
         cmd.Parameters.AddWithValue("@Email", email);
+        cmd.Parameters.AddWithValue("@PasswordHash", passwordHash);
         cmd.Parameters.AddWithValue("@CreateAt", DateTime.UtcNow);
         cmd.Parameters.AddWithValue("@IsActive", 1);
 
@@ -102,7 +128,7 @@ public class UserRepository : IUserRepository
         const string query =@"
                             update Users
                             set
-                                Name = @Name
+                                Name = @Name,
                                 Email = @Email
                             where UserId = @Id;
         ";
@@ -140,8 +166,8 @@ public class UserRepository : IUserRepository
 
     private sealed class UserMapper
     {
-        private int _userId = -1, _name = -1, _email = -1, _createAt = -1, _isActive = -1;
-        private bool _init ;
+        private int _userId = -1, _name = -1, _email = -1, _passwordHash = -1, _createAt = -1, _isActive = -1;
+        private bool _init;
         public User Map(DbDataReader dr)
         {
             if (!_init)
@@ -149,17 +175,20 @@ public class UserRepository : IUserRepository
                 _userId = dr.GetOrdinal("UserId");
                 _name = dr.GetOrdinal("Name");
                 _email = dr.GetOrdinal("Email");
+                _passwordHash = dr.GetOrdinal("PasswordHash");
                 _createAt = dr.GetOrdinal("CreateAt");
                 _isActive = dr.GetOrdinal("IsActive");
+                _init = true;
             }
 
             var userId = dr.GetGuid(_userId);
             var name = dr.GetString(_name);
             var email = dr.GetString(_email);
+            var passwordHash = dr.GetString(_passwordHash);
             var createAt = dr.GetDateTime(_createAt);
             var isActice = dr.GetBoolean(_isActive);
 
-            return new User(userId, name, email,createAt, isActice);
+            return new User(userId, name, email, passwordHash, createAt, isActice);
         }
     }
 

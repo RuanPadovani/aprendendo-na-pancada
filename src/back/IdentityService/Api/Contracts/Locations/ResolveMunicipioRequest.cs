@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace IdentityService.API.Contracts.Locations;
 
-public class ResolveCityRequest
-{
+public sealed record ResolveCityRequest(string NaoSeiAinda, string OqueColocarAqui);
+
     
-}
+

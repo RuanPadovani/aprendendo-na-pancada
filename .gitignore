@@ -3,6 +3,14 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+# Claude Code
+.claude/
+CLAUDE.md
+
+# Secrets locais - nunca commitar
+**/appsettings.Development.json
+**/appsettings.Production.json
+
 # dotenv files
 .env
 
