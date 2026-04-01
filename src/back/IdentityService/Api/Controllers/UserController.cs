@@ -2,7 +2,6 @@ using IdentityService.API.Contracts.Users;
 using IdentityService.API.Mappers;
 using IdentityService.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.API.Controllers;
@@ -19,6 +18,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet(Name = "ListAllUsers")]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<UserResponse>>> GetAll()
     {
         var result = await _userService.ListAllUsersAsync();

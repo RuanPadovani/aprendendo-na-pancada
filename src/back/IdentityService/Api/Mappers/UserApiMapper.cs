@@ -9,7 +9,8 @@ public static class UserApiMapper
     public static CreateUserCommand ToCommand(this CreateUserRequest req)
         => new (
             req.Name, 
-            req.Email);
+            req.Email,
+            req.Password);
 
     public static UpdateUserCommand ToCommand(this UpdateUserRequest req, Guid UserId)
         => new (UserId, req.Name, req.Email);

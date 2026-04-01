@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAuthentication("Bearer").AddJwtBearer();
+builder.Services.AddAuthentication();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructue(builder.Configuration);

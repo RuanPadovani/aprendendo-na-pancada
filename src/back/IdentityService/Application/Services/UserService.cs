@@ -1,16 +1,21 @@
+using Application.Interfaces;
 using IdentityService.Application.Commands;
 using IdentityService.Application.Interfaces;
 using IdentityService.Application.Results;
-using IdentityService.Domain.Entities;
+using Domain.Entities;
 
 namespace IdentityService.Application.UseCases;
 
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
+    private readonly IPasswordHasher _passwordHasher;
 
-    public UserService(IUserRepository userRepository)
-        => _userRepository = userRepository;
+    public UserService(IUserRepository userRepository, IPasswordHasher passwordHasher)
+    {
+        _userRepository = userRepository;
+        _passwordHasher = passwordHasher;
+    }
 
 
 
@@ -29,9 +34,8 @@ public class UserService : IUserService
 
     public async Task<bool> CreateUserAsync(CreateUserCommand createUser)
     {
-        var user = await _userRepository.CreateUser(createUser.Name, createUser.Email);
-
-        return user == true ? true : false;
+        var passwordHash = _passwordHasher.Hash(createUser.Password);
+        return await _userRepository.CreateUser(createUser.Name, createUser.Email, passwordHash);
     }
 
     public async Task<bool> EditUserAsync(UpdateUserCommand user)

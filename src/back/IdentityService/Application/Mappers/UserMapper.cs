@@ -1,5 +1,5 @@
 using IdentityService.Application.Results;
-using IdentityService.Domain.Entities;
+using Domain.Entities;
 
 namespace IdentityService.Application.Mappers;
 public static class UserMappers
