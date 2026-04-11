@@ -46,7 +46,7 @@ public sealed class RefreshTokenUseCase
         var newRefreshToken = RefreshToken.Create(user.UserId, newHash);
         await _refreshTokenRepo.SaveAsync(newRefreshToken);
 
-        var accessToken = _tokenService.GenerateAccessToken(user.UserId, user.Name, user.Name);
+        var accessToken = _tokenService.GenerateAccessToken(user.UserId, user.Name, user.Email);
 
         return new LoginResult(
             AccessToken: accessToken,

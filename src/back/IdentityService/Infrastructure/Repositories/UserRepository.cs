@@ -96,8 +96,9 @@ public class UserRepository : IUserRepository
         return mapper.Map(reader);
     }
 
-    public async Task<bool> CreateUser(string name, string email, string passwordHash)
+    public async Task<Guid?> CreateUser(string name, string email, string passwordHash)
     {
+        var id = Guid.NewGuid();
         using var conn = new MySqlConnection(_conStr);
 
         const string query = @"
@@ -107,7 +108,7 @@ public class UserRepository : IUserRepository
         ";
 
         using var cmd = new MySqlCommand(query,conn);
-        cmd.Parameters.AddWithValue("@Id", Guid.NewGuid());
+        cmd.Parameters.AddWithValue("@Id", id);
         cmd.Parameters.AddWithValue("@Name", name);
         cmd.Parameters.AddWithValue("@Email", email);
         cmd.Parameters.AddWithValue("@PasswordHash", passwordHash);
@@ -117,8 +118,8 @@ public class UserRepository : IUserRepository
         await conn.OpenAsync();
 
         var result = await cmd.ExecuteNonQueryAsync();
-        
-        return result > 0 ? true : false;
+
+        return result > 0 ? id : null;
     }
 
     public async Task<bool> EditUser(Guid id, string name, string email)

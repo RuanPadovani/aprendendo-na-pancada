@@ -32,7 +32,7 @@ public class UserService : IUserService
         return userEntity is null ? null : ToResult(userEntity);
     }
 
-    public async Task<bool> CreateUserAsync(CreateUserCommand createUser)
+    public async Task<Guid?> CreateUserAsync(CreateUserCommand createUser)
     {
         var passwordHash = _passwordHasher.Hash(createUser.Password);
         return await _userRepository.CreateUser(createUser.Name, createUser.Email, passwordHash);
@@ -40,7 +40,7 @@ public class UserService : IUserService
 
     public async Task<bool> EditUserAsync(UpdateUserCommand user)
     {
-        var updateUser = await _userRepository.EditUser(user.UserId, user.Name, user.Name);
+        var updateUser = await _userRepository.EditUser(user.UserId, user.Name, user.Email);
 
         return updateUser == true ? true : false;
     }

@@ -43,6 +43,7 @@ public sealed class AuthController : ControllerBase
 
         var response = new LoginResponse(
             result.AccessToken,
+            result.RefreshToken,
             result.ExpiredInSeconds
         );
 

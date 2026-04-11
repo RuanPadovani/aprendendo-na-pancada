@@ -23,7 +23,7 @@ public class UserController : ControllerBase
     {
         var result = await _userService.ListAllUsersAsync();
 
-        if (result == null)
+        if (result is null)
             return NotFound("Users not found!");
             
 
@@ -31,6 +31,7 @@ public class UserController : ControllerBase
     }
     
     [HttpGet("{id:guid}", Name = "GetUserById")]
+    [Authorize]
     public async Task<ActionResult<UserResponse>> GetUserById(Guid id)
     {
         var results = await _userService.GetUserByIdAsync(id);
@@ -44,12 +45,15 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Post([FromBody] CreateUserRequest request)
     {
-        if (request == null)
+        if (request is null)
             return BadRequest("Invalid Data");
 
         var userId = await _userService.CreateUserAsync(request.ToCommand());
 
-        return CreatedAtAction(nameof(GetUserById), new {id = userId},  null);
+        if (userId is null)
+            return BadRequest("Erro ao criar usuário.");
+
+        return CreatedAtAction(nameof(GetUserById), new { id = userId }, null);
     }
 
     [HttpPut("{userId:guid}")]

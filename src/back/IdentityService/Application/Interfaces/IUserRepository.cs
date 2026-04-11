@@ -9,7 +9,7 @@ public interface IUserRepository
     Task<User?> GetUserById(Guid id);
     Task<User?> GetUserByEmail(string email);
 
-    Task<bool> CreateUser(string name, string email, string passwordHash);
+    Task<Guid?> CreateUser(string name, string email, string passwordHash);
 
     Task<bool> EditUser(Guid id, string name, string email);
 

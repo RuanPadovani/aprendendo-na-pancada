@@ -29,13 +29,13 @@ public sealed class JwtTokenService : ITokenService
             new (ClaimTypes.Email, email)
         };
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SigningKey));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey));
         var credencials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
-        var expires = DateTime.UtcNow.AddMinutes(_jwtOptions.AccessTokenMinutes);
+        var expires = DateTime.UtcNow.AddMinutes(_jwtOptions.TokenValidMinutes);
 
         var token = new JwtSecurityToken(
-            issuer: _jwtOptions.Issuer,
-            audience: _jwtOptions.Audience,
+            issuer: _jwtOptions.ValidIssuer,
+            audience: _jwtOptions.ValidAudiences,
             claims: claims,
             expires: expires,
             signingCredentials: credencials
@@ -57,5 +57,5 @@ public sealed class JwtTokenService : ITokenService
         return Convert.ToHexString(bytes).ToLower();
     }
 
-    public int GetAccessTokenExpirationInSeconds() => _jwtOptions.AccessTokenMinutes * 60;
+    public int GetAccessTokenExpirationInSeconds() => _jwtOptions.TokenValidMinutes * 60;
 }

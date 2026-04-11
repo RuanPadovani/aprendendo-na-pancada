@@ -13,9 +13,9 @@ public static class AuthenticationExtensions
         services.AddOptions<Infrastructure.Options.JwtOptions>()
             .Bind(config.GetSection(Infrastructure.Options.JwtOptions.SectionName))
             .Validate(o =>
-                !string.IsNullOrEmpty(o.Issuer) &&
-                !string.IsNullOrEmpty(o.Audience) &&
-                !string.IsNullOrEmpty(o.SigningKey),
+                !string.IsNullOrEmpty(o.ValidIssuer) &&
+                !string.IsNullOrEmpty(o.ValidAudiences) &&
+                !string.IsNullOrEmpty(o.SecretKey),
                 $"Configuração {Infrastructure.Options.JwtOptions.SectionName} está inválida!")
             .ValidateOnStart();
 
@@ -29,15 +29,15 @@ public static class AuthenticationExtensions
                 {
                     //Valida o emissor
                     ValidateIssuer = true,
-                    ValidIssuer = jwt.Issuer,
-                    
+                    ValidIssuer = jwt.ValidIssuer,
+
                     // Valida para quem vai
                     ValidateAudience = true,
-                    ValidAudience = jwt.Audience,
+                    ValidAudience = jwt.ValidAudiences,
 
                     //Converte a chave para byte
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.SigningKey)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.SecretKey)),
 
                     //Valida tempo de vida do token
                     ValidateLifetime = true,

@@ -1,6 +1,5 @@
+using Api.Extensions.DependencyInjection;
 using Application.ApplicationDependencyInjection;
-using IdentityService.Application.Interfaces;
-using IdentityService.Application.UseCases;
 using Infrastructure.InfrastructureDependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAuthentication();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddInfrastructue(builder.Configuration);
 
