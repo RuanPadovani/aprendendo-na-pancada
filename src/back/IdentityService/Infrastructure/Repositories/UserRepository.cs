@@ -1,5 +1,5 @@
 using System.Data.Common;
-using IdentityService.Application.Interfaces;
+using IdentityService.Domain.Interfaces;
 using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;

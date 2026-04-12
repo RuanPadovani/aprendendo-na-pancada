@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Application.Interfaces;
+using IdentityService.Domain.Interfaces;
 using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;

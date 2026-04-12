@@ -1,78 +1,81 @@
-using IdentityService.API.Contracts.Users;
-using IdentityService.API.Mappers;
-using IdentityService.Application.Interfaces;
+using IdentityService.Api.Contracts.Users;
+using IdentityService.Application.Users.Commands.CreateUser;
+using IdentityService.Application.Users.Commands.DeleteUser;
+using IdentityService.Application.Users.Commands.UpdateUser;
+using IdentityService.Application.Users.Queries.GetAllUsers;
+using IdentityService.Application.Users.Queries.GetUserById;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IdentityService.API.Controllers;
+namespace IdentityService.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly IUserService _userService;
+    private readonly ISender _sender;
 
-    public UserController(IUserService userService)
+    public UserController(ISender sender)
     {
-        _userService = userService;
+        _sender = sender;
     }
 
     [HttpGet(Name = "ListAllUsers")]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<UserResponse>>> GetAll()
+    public async Task<IActionResult> GetAll(CancellationToken ct)
     {
-        var result = await _userService.ListAllUsersAsync();
-
-        if (result is null)
-            return NotFound("Users not found!");
-            
-
-        return Ok(result.Select(r => r.ToResponse()));
+        var result = await _sender.Send(new GetAllUsersQuery(), ct);
+        return Ok(result);
     }
-    
+
     [HttpGet("{id:guid}", Name = "GetUserById")]
     [Authorize]
-    public async Task<ActionResult<UserResponse>> GetUserById(Guid id)
+    public async Task<IActionResult> GetUserById(Guid id, CancellationToken ct)
     {
-        var results = await _userService.GetUserByIdAsync(id);
+        var result = await _sender.Send(new GetUserByIdQuery(id), ct);
 
-        if (results is null)
-            return NotFound("Users not found!");
+        if (result is null)
+            return NotFound("Usuário não encontrado.");
 
-        return Ok(results);
+        return Ok(result);
     }
 
     [HttpPost]
-    public async Task<ActionResult> Post([FromBody] CreateUserRequest request)
+    public async Task<IActionResult> Post([FromBody] CreateUserRequest request, CancellationToken ct)
     {
-        if (request is null)
-            return BadRequest("Invalid Data");
+        var command = new CreateUserCommand(request.Name, request.Email, request.Password);
+        var result = await _sender.Send(command, ct);
 
-        var userId = await _userService.CreateUserAsync(request.ToCommand());
+        if (!result.IsSuccess)
+            return BadRequest(result.Error);
 
-        if (userId is null)
-            return BadRequest("Erro ao criar usuário.");
-
-        return CreatedAtAction(nameof(GetUserById), new { id = userId }, null);
+        return CreatedAtAction(nameof(GetUserById), new { id = result.Value }, null);
     }
 
     [HttpPut("{userId:guid}")]
-    public async Task<ActionResult> Put(Guid userId, [FromBody]UpdateUserRequest request)
+    [Authorize]
+    public async Task<IActionResult> Put(Guid userId, [FromBody] UpdateUserRequest request, CancellationToken ct)
     {
-        await _userService.EditUserAsync(request.ToCommand(userId));
+        var command = new UpdateUserCommand(userId, request.Name, request.Email);
+        var result = await _sender.Send(command, ct);
+
+        if (!result.IsSuccess)
+            return BadRequest(result.Error);
+
         return NoContent();
     }
 
     [HttpDelete("{userId:guid}")]
-    public async Task<ActionResult> Delete(Guid userId)
+    [Authorize]
+    public async Task<IActionResult> Delete(Guid userId, CancellationToken ct)
     {
-        var existing = await _userService.GetUserByIdAsync(userId);
-        if (existing is null)
-            return BadRequest();
+        var command = new DeleteUserCommand(userId);
+        var result = await _sender.Send(command, ct);
 
-        await _userService.DeleteUserAsync(userId);
+        if (!result.IsSuccess)
+            return NotFound(result.Error);
 
-        return Ok("Usuario deletado");
+        return NoContent();
     }
-    
 }
