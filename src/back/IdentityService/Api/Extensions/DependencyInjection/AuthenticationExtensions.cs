@@ -20,34 +20,27 @@ public static class AuthenticationExtensions
             .ValidateOnStart();
 
         // 2) Configura JwtBearerOptions usando DI (IOptions<JwtOptions>)
-        services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
-            .Configure<IOptions<Infrastructure.Options.JwtOptions>>((options, jwtOptions) =>
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
             {
-                var jwt = jwtOptions.Value;
+                var jwt = config.GetSection(Infrastructure.Options.JwtOptions.SectionName)
+                    .Get<Infrastructure.Options.JwtOptions>()!;
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    //Valida o emissor
                     ValidateIssuer = true,
                     ValidIssuer = jwt.ValidIssuer,
 
-                    // Valida para quem vai
                     ValidateAudience = true,
                     ValidAudience = jwt.ValidAudiences,
 
-                    //Converte a chave para byte
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.SecretKey)),
 
-                    //Valida tempo de vida do token
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.FromMinutes(3)
                 };
             });
-
-        // 3) Registra Authentication/Authorization
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer();
 
         services.AddAuthorization();
 

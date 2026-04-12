@@ -1,12 +1,11 @@
-using Application.Interfaces;
+using IdentityService.Application.Common.Interfaces;
 
 namespace Infrastructure.Security;
 
 public class BCryptPasswordHasher : IPasswordHasher
 {
-    public string Hash( string password)
+    public string Hash(string password)
         => BCrypt.Net.BCrypt.HashPassword(password);
-
 
     public bool Verify(string password, string hashPassword)
         => BCrypt.Net.BCrypt.Verify(password, hashPassword);

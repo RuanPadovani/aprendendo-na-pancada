@@ -1,6 +1,5 @@
 using System.Security.Claims;
-using Application.Interfaces;
-using Domain.Entities;
+using IdentityService.Application.Common.Interfaces;
 using Infrastructure.Options;
 using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
@@ -30,7 +29,7 @@ public sealed class JwtTokenService : ITokenService
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey));
-        var credencials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+        var credencials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         var expires = DateTime.UtcNow.AddMinutes(_jwtOptions.TokenValidMinutes);
 
         var token = new JwtSecurityToken(

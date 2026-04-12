@@ -1,4 +1,4 @@
-namespace Api.Contracts.Auth.Requests;
+namespace IdentityService.Api.Contracts.Auth.Requests;
 
 public sealed record LoginRequest(string Email, string Password);
 

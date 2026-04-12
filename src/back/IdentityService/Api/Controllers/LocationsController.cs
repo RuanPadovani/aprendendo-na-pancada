@@ -1,22 +1,28 @@
+using IdentityService.Application.Location.Queries.ResolveCity;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IdentityService.API.Controllers;
+namespace IdentityService.Api.Controllers;
 
-[Route("[controller]")]
-public class LocationsController : Controller
+[ApiController]
+[Route("api/[controller]")]
+public class LocationsController : ControllerBase
 {
-    private readonly ILogger<LocationsController> _logger;
+    private readonly ISender _sender;
 
-    public LocationsController(ILogger<LocationsController> logger)
+    public LocationsController(ISender sender)
     {
-        _logger = logger;
+        _sender = sender;
     }
 
-
-    [HttpGet(Name ="para")]
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
+    [HttpGet("{uf}/{city}")]
+    public async Task<IActionResult> GetCity(string uf, string city, CancellationToken ct)
     {
-        return View("Error!");
+        var result = await _sender.Send(new ResolveCityQuery(uf, city), ct);
+
+        if (result is null)
+            return NotFound("Município não encontrado.");
+
+        return Ok(result);
     }
 }
