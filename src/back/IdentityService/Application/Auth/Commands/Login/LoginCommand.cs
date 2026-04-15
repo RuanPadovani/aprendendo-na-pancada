@@ -1,6 +1,6 @@
+using Application.Common.Mediator;
 using IdentityService.Application.Auth.DTOs;
 using IdentityService.Application.Common.Models;
-using MediatR;
 
 namespace IdentityService.Application.Auth.Commands.Login;
 

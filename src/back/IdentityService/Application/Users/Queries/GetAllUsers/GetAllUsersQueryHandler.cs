@@ -1,6 +1,6 @@
+using Application.Common.Mediator;
 using IdentityService.Application.Users.DTOs;
 using IdentityService.Domain.Interfaces;
-using MediatR;
 
 namespace IdentityService.Application.Users.Queries.GetAllUsers;
 

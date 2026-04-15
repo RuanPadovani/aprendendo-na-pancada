@@ -1,10 +1,10 @@
-using MediatR;
+using Application.Common.Mediator;
 using Microsoft.Extensions.Logging;
 
 namespace IdentityService.Application.Common.Behaviors;
 
 public sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : notnull
+    where TRequest : IRequest<TResponse>
 {
     private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger;
 
@@ -15,8 +15,8 @@ public sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
 
     public async Task<TResponse> Handle(
         TRequest request,
-        RequestHandlerDelegate<TResponse> next,
-        CancellationToken cancellationToken)
+        Func<Task<TResponse>> next,
+        CancellationToken ct)
     {
         var requestName = typeof(TRequest).Name;
 
