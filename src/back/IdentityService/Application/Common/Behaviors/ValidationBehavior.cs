@@ -1,10 +1,10 @@
+using Application.Common.Mediator;
 using FluentValidation;
-using MediatR;
 
 namespace IdentityService.Application.Common.Behaviors;
 
 public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : notnull
+    where TRequest : IRequest<TResponse>
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
@@ -15,8 +15,8 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
 
     public async Task<TResponse> Handle(
         TRequest request,
-        RequestHandlerDelegate<TResponse> next,
-        CancellationToken cancellationToken)
+        Func<Task<TResponse>> next,
+        CancellationToken ct)
     {
         if (!_validators.Any())
             return await next();

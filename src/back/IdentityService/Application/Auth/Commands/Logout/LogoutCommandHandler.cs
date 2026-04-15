@@ -1,7 +1,7 @@
+using Application.Common.Mediator;
 using IdentityService.Application.Common.Interfaces;
 using IdentityService.Application.Common.Models;
 using IdentityService.Domain.Interfaces;
-using MediatR;
 
 namespace IdentityService.Application.Auth.Commands.Logout;
 

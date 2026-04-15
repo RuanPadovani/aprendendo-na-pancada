@@ -3,7 +3,7 @@ using RefreshTokenEntity = Domain.Entities.RefreshToken;
 using IdentityService.Application.Common.Interfaces;
 using IdentityService.Application.Common.Models;
 using IdentityService.Domain.Interfaces;
-using MediatR;
+using Application.Common.Mediator;
 
 namespace IdentityService.Application.Auth.Commands.Login;
 

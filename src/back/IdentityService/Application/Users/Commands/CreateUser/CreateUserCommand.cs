@@ -1,5 +1,5 @@
+using Application.Common.Mediator;
 using IdentityService.Application.Common.Models;
-using MediatR;
 
 namespace IdentityService.Application.Users.Commands.CreateUser;
 

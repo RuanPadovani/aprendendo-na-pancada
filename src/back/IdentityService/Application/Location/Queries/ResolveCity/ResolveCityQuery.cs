@@ -1,5 +1,5 @@
+using Application.Common.Mediator;
 using IdentityService.Application.Location.DTOs;
-using MediatR;
 
 namespace IdentityService.Application.Location.Queries.ResolveCity;
 
