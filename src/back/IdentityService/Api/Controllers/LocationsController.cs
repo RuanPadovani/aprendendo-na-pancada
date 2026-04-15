@@ -1,5 +1,5 @@
+using Application.Common.Mediator;
 using IdentityService.Application.Location.Queries.ResolveCity;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.Api.Controllers;
@@ -8,17 +8,17 @@ namespace IdentityService.Api.Controllers;
 [Route("api/[controller]")]
 public class LocationsController : ControllerBase
 {
-    private readonly ISender _sender;
+    private readonly IMediator _mediator;
 
-    public LocationsController(ISender sender)
+    public LocationsController(IMediator mediator)
     {
-        _sender = sender;
+        _mediator = mediator;
     }
 
     [HttpGet("{uf}/{city}")]
     public async Task<IActionResult> GetCity(string uf, string city, CancellationToken ct)
     {
-        var result = await _sender.Send(new ResolveCityQuery(uf, city), ct);
+        var result = await _mediator.Send(new ResolveCityQuery(uf, city), ct);
 
         if (result is null)
             return NotFound("Município não encontrado.");

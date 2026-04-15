@@ -1,5 +1,6 @@
 using System.Security.Cryptography.Xml;
 using Api.Extensions.DependencyInjection;
+using Api.Middleware;
 using IdentityService.Application.DependencyInjection;
 using IdentityService.Infrastructure.DependencyInjection;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
@@ -51,5 +52,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<ExceptionMiddleware>();
 app.MapControllers();
 app.Run();
