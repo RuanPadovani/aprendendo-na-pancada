@@ -1,4 +1,6 @@
-namespace Domain.Entities;
+using IdentityService.Domain.Enums;
+
+namespace IdentityService.Domain.Entities;
 
 public class User
 {
@@ -8,8 +10,9 @@ public class User
     public string PasswordHash { get; private set; } = string.Empty;
     public DateTime CreateAt { get; private set; }
     public bool IsActive { get; private set; }
+    public Role Role { get; private set; }
 
-    public User(string name, string email, string passwordHash)
+    public User(string name, string email, string passwordHash, Role role = Role.User)
     {
         UserId = Guid.NewGuid();
         Name = name;
@@ -17,6 +20,7 @@ public class User
         PasswordHash = passwordHash;
         CreateAt = DateTime.UtcNow;
         IsActive = true;
+        Role = role;
     }
 
     public User(
@@ -25,7 +29,8 @@ public class User
         string email,
         string passwordHash,
         DateTime createAt,
-        bool isActive)
+        bool isActive, 
+        Role role)
     {
         UserId = userId;
         Name = name;
@@ -33,5 +38,6 @@ public class User
         PasswordHash = passwordHash;
         CreateAt = createAt;
         IsActive = isActive;
+        Role = role;
     }
 }

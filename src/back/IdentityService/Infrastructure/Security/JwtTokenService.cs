@@ -6,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Cryptography;
+using IdentityService.Domain.Enums;
 
 namespace Infrastructure.Security;
 
@@ -18,14 +19,15 @@ public sealed class JwtTokenService : ITokenService
         _jwtOptions = jwtOptions.Value;
     }
 
-    public string GenerateAccessToken(Guid userId, string name, string email)
+    public string GenerateAccessToken(Guid userId, string name, string email, Role role)
     {
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
             new (ClaimTypes.NameIdentifier, userId.ToString()),
             new(ClaimTypes.Name, name),
-            new (ClaimTypes.Email, email)
+            new (ClaimTypes.Email, email),
+            new (ClaimTypes.Role, role.ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey));

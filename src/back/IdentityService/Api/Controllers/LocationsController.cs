@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace IdentityService.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class LocationsController : ControllerBase
 {
     private readonly IMediator _mediator;

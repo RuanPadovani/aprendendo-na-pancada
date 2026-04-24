@@ -1,8 +1,9 @@
 using System.Data.Common;
 using IdentityService.Domain.Interfaces;
-using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
+using IdentityService.Domain.Entities;
+using IdentityService.Domain.Enums;
 
 namespace Infrastructure.Repositories;
 
@@ -21,7 +22,7 @@ public class UserRepository : IUserRepository
 
         const string query = @"
                             select
-                                UserId, Name, Email, PasswordHash, CreateAt, IsActive
+                                UserId, Name, Email, PasswordHash, CreateAt, IsActive, Role
                             from
                                 Users;";
 
@@ -47,7 +48,7 @@ public class UserRepository : IUserRepository
 
         const string query = @"
                             select
-                                UserId, Name, Email, PasswordHash, CreateAt, IsActive
+                                UserId, Name, Email, PasswordHash, CreateAt, IsActive, Role
                             from
                                 Users
                             where UserId = @Id
@@ -74,7 +75,7 @@ public class UserRepository : IUserRepository
 
         const string query = @"
                             select
-                                UserId, Name, Email, PasswordHash, CreateAt, IsActive
+                                UserId, Name, Email, PasswordHash, CreateAt, IsActive, Role
                             from
                                 Users
                             where Email = @Email
@@ -96,15 +97,15 @@ public class UserRepository : IUserRepository
         return mapper.Map(reader);
     }
 
-    public async Task<Guid?> CreateUser(string name, string email, string passwordHash)
+    public async Task<Guid?> CreateUser(string name, string email, string passwordHash, Role role)
     {
         var id = Guid.NewGuid();
         using var conn = new MySqlConnection(_conStr);
 
         const string query = @"
                             insert into Users
-                                    (UserId, Name, Email, PasswordHash, CreateAt, IsActive)
-                            values (@Id, @Name, @Email, @PasswordHash, @CreateAt, @IsActive);
+                                    (UserId, Name, Email, PasswordHash, CreateAt, IsActive, Role)
+                            values (@Id, @Name, @Email, @PasswordHash, @CreateAt, @IsActive, @Role);
         ";
 
         using var cmd = new MySqlCommand(query,conn);
@@ -114,6 +115,7 @@ public class UserRepository : IUserRepository
         cmd.Parameters.AddWithValue("@PasswordHash", passwordHash);
         cmd.Parameters.AddWithValue("@CreateAt", DateTime.UtcNow);
         cmd.Parameters.AddWithValue("@IsActive", 1);
+        cmd.Parameters.AddWithValue("@Role", (int)role);
 
         await conn.OpenAsync();
 
@@ -167,7 +169,7 @@ public class UserRepository : IUserRepository
 
     private sealed class UserMapper
     {
-        private int _userId = -1, _name = -1, _email = -1, _passwordHash = -1, _createAt = -1, _isActive = -1;
+        private int _userId = -1, _name = -1, _email = -1, _passwordHash = -1, _createAt = -1, _isActive = -1, _role = -1; 
         private bool _init;
         public User Map(DbDataReader dr)
         {
@@ -179,6 +181,7 @@ public class UserRepository : IUserRepository
                 _passwordHash = dr.GetOrdinal("PasswordHash");
                 _createAt = dr.GetOrdinal("CreateAt");
                 _isActive = dr.GetOrdinal("IsActive");
+                _role = dr.GetOrdinal("Role");
                 _init = true;
             }
 
@@ -188,8 +191,9 @@ public class UserRepository : IUserRepository
             var passwordHash = dr.GetString(_passwordHash);
             var createAt = dr.GetDateTime(_createAt);
             var isActice = dr.GetBoolean(_isActive);
+            var role = (Role)dr.GetInt32(_role);
 
-            return new User(userId, name, email, passwordHash, createAt, isActice);
+            return new User(userId, name, email, passwordHash, createAt, isActice, role);
         }
     }
 

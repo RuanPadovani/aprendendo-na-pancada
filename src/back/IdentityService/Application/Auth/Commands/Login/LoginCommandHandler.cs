@@ -36,7 +36,7 @@ public sealed class LoginCommandHandler : IRequestHandler<LoginCommand, Result<L
         if (!_passwordHasher.Verify(request.Password, user.PasswordHash))
             return Result<LoginResponse>.Failure("Email ou senha inválidos.");
 
-        var accessToken = _tokenService.GenerateAccessToken(user.UserId, user.Name, user.Email);
+        var accessToken = _tokenService.GenerateAccessToken(user.UserId, user.Name, user.Email, user.Role);
         var rawRefreshToken = _tokenService.GenerateRefreshToken();
         var tokenHash = _tokenService.HashToken(rawRefreshToken);
         var expiredIn = _tokenService.GetAccessTokenExpirationInSeconds();

@@ -5,13 +5,14 @@ using IdentityService.Application.Users.Commands.DeleteUser;
 using IdentityService.Application.Users.Commands.UpdateUser;
 using IdentityService.Application.Users.Queries.GetAllUsers;
 using IdentityService.Application.Users.Queries.GetUserById;
+using IdentityService.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class UserController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -21,19 +22,19 @@ public class UserController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet(Name = "ListAllUsers")]
-    [Authorize]
+    [HttpGet(Name = "list-all-users")]
+    [Authorize(Policy = "Admin")]
     public async Task<IActionResult> GetAll(CancellationToken ct)
     {
         var result = await _mediator.Send(new GetAllUsersQuery(), ct);
         return Ok(result);
     }
 
-    [HttpGet("{id:guid}", Name = "GetUserById")]
-    [Authorize]
-    public async Task<IActionResult> GetUserById(Guid id, CancellationToken ct)
+    [HttpGet("{userId:guid}", Name = "GetUserById")]
+    [Authorize(Policy = "User")]
+    public async Task<IActionResult> GetUserById(Guid userId, CancellationToken ct)
     {
-        var result = await _mediator.Send(new GetUserByIdQuery(id), ct);
+        var result = await _mediator.Send(new GetUserByIdQuery(userId), ct);
 
         if (result is null)
             return NotFound("Usuário não encontrado.");
@@ -44,7 +45,7 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] CreateUserRequest request, CancellationToken ct)
     {
-        var command = new CreateUserCommand(request.Name, request.Email, request.Password);
+        var command = new CreateUserCommand(request.Name, request.Email, request.Password, Role.User);
         var result = await _mediator.Send(command, ct);
 
         if (!result.IsSuccess)
@@ -54,7 +55,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("{userId:guid}")]
-    [Authorize]
+    [Authorize(Policy ="User")]
     public async Task<IActionResult> Put(Guid userId, [FromBody] UpdateUserRequest request, CancellationToken ct)
     {
         var command = new UpdateUserCommand(userId, request.Name, request.Email);
@@ -67,7 +68,7 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("{userId:guid}")]
-    [Authorize]
+    [Authorize(Policy = "UserAndAdmin")]
     public async Task<IActionResult> Delete(Guid userId, CancellationToken ct)
     {
         var command = new DeleteUserCommand(userId);

@@ -34,7 +34,6 @@ public static class ApplicationServiceRegistration
             services.AddScoped(servicesType, handler);
         }
 
-
         return services;
     }
 }

@@ -5,11 +5,12 @@ using IdentityService.Application.Auth.Commands.Logout;
 using IdentityService.Application.Auth.Commands.RefreshToken;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace IdentityService.Api.Controllers;
 
 [ApiController]
-[Route("api/auth")]
+[Route("auth")]
 public sealed class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -21,6 +22,7 @@ public sealed class AuthController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("login")]
+    [EnableRateLimiting("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken ct)
     {
         var command = new LoginCommand(request.Email, request.Password);

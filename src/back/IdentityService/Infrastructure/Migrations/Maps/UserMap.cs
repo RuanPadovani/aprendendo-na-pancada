@@ -1,4 +1,5 @@
-using Domain.Entities;
+using IdentityService.Domain.Entities;
+using IdentityService.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -17,5 +18,9 @@ public sealed class UserMap : IEntityTypeConfiguration<User>
 
         // Define como chave unica.
         builder.HasIndex(x => x.Email).IsUnique();
+
+        builder.Property(x => x.Role)
+            .IsRequired()
+            .HasDefaultValue(Role.User);
     }
 }

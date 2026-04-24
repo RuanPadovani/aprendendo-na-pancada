@@ -43,7 +43,7 @@ public sealed class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCom
         var newRefreshToken = RefreshTokenEntity.Create(user.UserId, newHash);
         await _refreshTokenRepository.SaveAsync(newRefreshToken);
 
-        var accessToken = _tokenService.GenerateAccessToken(user.UserId, user.Name, user.Email);
+        var accessToken = _tokenService.GenerateAccessToken(user.UserId, user.Name, user.Email, user.Role);
         var expiredIn = _tokenService.GetAccessTokenExpirationInSeconds();
 
         return Result<LoginResponse>.Success(new LoginResponse(accessToken, newRawToken, expiredIn));
