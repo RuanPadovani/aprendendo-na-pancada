@@ -2,7 +2,7 @@ using System.Security.Claims;
 
 namespace IdentityService.Api.Extensions.DependencyInjection;
 
-public static class AuthorizationExtenion
+public static class AuthorizationExtensions
 {
     public static IServiceCollection AddAuthorizationV1(this IServiceCollection services)
     {

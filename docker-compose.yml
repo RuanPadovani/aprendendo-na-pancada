@@ -1,0 +1,73 @@
+services:
+
+# ====================> Banco de Dados <====================
+
+  mysql:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_IDENTITY_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE_NAME}"
+    ports: 
+      - 3306:3306
+    volumes:
+      - mysql_data:/var/lib/mysql # persiste os dados entre reinicializações
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - backend
+
+# ====================> RabbitMQ <====================
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"    # porta AMQP (onde os serviços conectam)
+      - "15672:15672"  # painel de administração web
+    environment:
+      RABBITMQ_DEFAULT_USER: "${RABBITMQ_DEFAULT_USER}"
+      RABBITMQ_DEFAULT_PASS: "${RABBITMQ_DEFAULT_PASSWORD}"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+
+  # ─── IdentityService ────────────────────────────────────────
+  identity-service:
+    build:
+      context: ./src/back   # onde está o Dockerfile
+      dockerfile: Dockerfile
+    container_name: identity-service
+    ports:
+      - "5100:8080"    # você acessa em localhost:5100, internamente roda em 8080
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Server=mysql;Database=${MYSQL_DATABASE_NAME};Uid=root;Pwd=${MYSQL_IDENTITY_PASSWORD}"
+      JWT__ValidIssuer: "${JWT_VALIDISSUER}"
+      JWT__ValidAudiences: "${JWT_VALIDAUDIENCES}"
+      JWT__SecretKey: "${JWT_SECRET_KEY}"
+      JWT__TokenValidMinutes: "15"
+      JWT__RefreshTokenValidInMinutes: "120"
+    depends_on:
+      mysql:
+        condition: service_healthy    # só sobe depois que o MySQL estiver pronto
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - backend
+
+volumes:
+  mysql_data:    # volume nomeado — Docker gerencia onde fica no disco
+  
+networks:
+  backend:
+    driver: bridge

@@ -33,8 +33,6 @@ public static class SwaggerGenExtensions
 
         });
 
-        services.AddSwaggerGen();
-
         return services;
     }
 }

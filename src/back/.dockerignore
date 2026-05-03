@@ -1,0 +1,14 @@
+# pastas de build local — geradas pelo dotnet build na sua máquina
+**/bin/
+**/obj/
+
+# git
+.git
+.gitignore
+
+# arquivos de IDE
+.vs/
+**/.vscode/
+
+# o próprio dockerignore e readme
+.dockerignore

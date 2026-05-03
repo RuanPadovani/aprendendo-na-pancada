@@ -51,7 +51,7 @@ public class UserController : ControllerBase
         if (!result.IsSuccess)
             return BadRequest(result.Error);
 
-        return CreatedAtAction(nameof(GetUserById), new { id = result.Value }, null);
+        return CreatedAtAction(nameof(GetUserById), new { userId = result.Value }, null);
     }
 
     [HttpPut("{userId:guid}")]
